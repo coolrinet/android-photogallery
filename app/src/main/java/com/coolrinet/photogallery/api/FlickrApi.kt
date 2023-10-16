@@ -1,5 +1,6 @@
 package com.coolrinet.photogallery.api
 
+import com.coolrinet.photogallery.FlickrResponse
 import retrofit2.http.GET
 
 private const val API_KEY = "a31717e733d55b0a10a0bd2a17ab5682"
@@ -12,5 +13,5 @@ interface FlickrApi {
                 "&nojsoncallback=1" +
                 "&extras=url_s"
     )
-    suspend fun fetchPhotos(): String
+    suspend fun fetchPhotos(): FlickrResponse
 }
