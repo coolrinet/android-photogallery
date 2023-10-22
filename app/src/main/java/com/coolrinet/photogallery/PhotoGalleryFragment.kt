@@ -68,7 +68,13 @@ class PhotoGalleryFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                TODO("Not implemented yet")
+                return when (menuItem.itemId) {
+                    (R.id.menu_item_clear) -> {
+                        photoGalleryViewModel.setQuery("")
+                        true
+                    }
+                    else -> false
+                }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
