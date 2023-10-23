@@ -34,6 +34,7 @@ class PhotoGalleryFragment : Fragment() {
         }
 
     private var searchView: SearchView? = null
+    private var pollingMenuItem: MenuItem? = null
 
     private val photoGalleryViewModel: PhotoGalleryViewModel by viewModels()
 
@@ -71,6 +72,7 @@ class PhotoGalleryFragment : Fragment() {
 
                 val searchItem: MenuItem = menu.findItem(R.id.menu_item_search)
                 searchView = searchItem.actionView as? SearchView
+                pollingMenuItem = menu.findItem(R.id.menu_item_toggle_polling)
 
                 searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -92,6 +94,10 @@ class PhotoGalleryFragment : Fragment() {
                         photoGalleryViewModel.setQuery("")
                         true
                     }
+                    (R.id.menu_item_toggle_polling) -> {
+                        photoGalleryViewModel.toggleIsPolling()
+                        true
+                    }
                     else -> false
                 }
             }
@@ -99,6 +105,7 @@ class PhotoGalleryFragment : Fragment() {
             override fun onMenuClosed(menu: Menu) {
                 super.onMenuClosed(menu)
                 searchView = null
+                pollingMenuItem = null
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
@@ -107,9 +114,19 @@ class PhotoGalleryFragment : Fragment() {
                 photoGalleryViewModel.uiState.collect { state ->
                     binding.photoGrid.adapter = PhotoListAdapter(state.images)
                     searchView?.setQuery(state.query, false)
+                    updatePollingState(state.isPolling)
                 }
             }
         }
+    }
+
+    private fun updatePollingState(isPolling: Boolean) {
+        val toggleItemTitle = if (isPolling) {
+            R.string.stop_polling
+        } else {
+            R.string.start_polling
+        }
+        pollingMenuItem?.setTitle(toggleItemTitle)
     }
 
     override fun onDestroyView() {
