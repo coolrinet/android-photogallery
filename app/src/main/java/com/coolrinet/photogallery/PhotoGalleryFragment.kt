@@ -18,13 +18,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.coolrinet.photogallery.databinding.FragmentPhotoGalleryBinding
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "PhotoGalleryFragment"
+private const val POLL_WORK = "POLL_WORK"
 
 class PhotoGalleryFragment : Fragment() {
     private var _binding: FragmentPhotoGalleryBinding? = null
@@ -37,19 +40,6 @@ class PhotoGalleryFragment : Fragment() {
     private var pollingMenuItem: MenuItem? = null
 
     private val photoGalleryViewModel: PhotoGalleryViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .build()
-        val workRequest = OneTimeWorkRequestBuilder<PollWorker>()
-            .setConstraints(constraints)
-            .build()
-        WorkManager.getInstance(requireContext())
-            .enqueue(workRequest)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,11 +80,11 @@ class PhotoGalleryFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    (R.id.menu_item_clear) -> {
+                    R.id.menu_item_clear -> {
                         photoGalleryViewModel.setQuery("")
                         true
                     }
-                    (R.id.menu_item_toggle_polling) -> {
+                    R.id.menu_item_toggle_polling -> {
                         photoGalleryViewModel.toggleIsPolling()
                         true
                     }
@@ -102,11 +92,6 @@ class PhotoGalleryFragment : Fragment() {
                 }
             }
 
-            override fun onMenuClosed(menu: Menu) {
-                super.onMenuClosed(menu)
-                searchView = null
-                pollingMenuItem = null
-            }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -126,7 +111,24 @@ class PhotoGalleryFragment : Fragment() {
         } else {
             R.string.start_polling
         }
-        pollingMenuItem?.setTitle(toggleItemTitle)
+        pollingMenuItem?.title = getString(toggleItemTitle)
+
+        if (isPolling) {
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+            val periodicRequest =
+                PeriodicWorkRequestBuilder<PollWorker>(15, TimeUnit.MINUTES)
+                    .setConstraints(constraints)
+                    .build()
+            WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+                POLL_WORK,
+                ExistingPeriodicWorkPolicy.KEEP,
+                periodicRequest
+            )
+        } else {
+            WorkManager.getInstance(requireContext()).cancelUniqueWork(POLL_WORK)
+        }
     }
 
     override fun onDestroyView() {
