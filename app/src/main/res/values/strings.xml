@@ -9,4 +9,5 @@
     <string name="stop_polling">Stop polling</string>
     <string name="photo_title">Photo title</string>
     <string name="database_photo_description">Flickr photo saved in the database</string>
+    <string name="view_database_photos">View photos from database</string>
 </resources>
