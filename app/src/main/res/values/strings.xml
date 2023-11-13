@@ -7,4 +7,6 @@
     <string name="new_pictures_text">You have new pictures in PhotoGallery.</string>
     <string name="start_polling">Start polling</string>
     <string name="stop_polling">Stop polling</string>
+    <string name="photo_title">Photo title</string>
+    <string name="database_photo_description">Flickr photo saved in the database</string>
 </resources>
