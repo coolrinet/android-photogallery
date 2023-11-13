@@ -10,9 +10,6 @@ interface GalleryDao {
     @Query("SELECT * FROM photos")
     suspend fun getPhotos(): List<GalleryItem>
 
-    @Query("SELECT * FROM photos WHERE title LIKE :searchQuery")
-    suspend fun getPhotosByTitle(searchQuery: String): List<GalleryItem>
-
     @Query("SELECT * FROM photos WHERE url = :photoUrl")
     suspend fun getPhotoByUrl(photoUrl: String): GalleryItem?
 

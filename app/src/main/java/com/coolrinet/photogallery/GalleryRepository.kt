@@ -18,9 +18,6 @@ class GalleryRepository private constructor(
 
     suspend fun getPhotos() = database.galleryDao().getPhotos()
 
-    suspend fun getPhotosByTitle(searchQuery: String) =
-        database.galleryDao().getPhotosByTitle(searchQuery)
-
     suspend fun getPhotoByUrl(photoUrl: String) =
         database.galleryDao().getPhotoByUrl(photoUrl)
 
