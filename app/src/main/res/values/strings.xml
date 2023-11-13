@@ -11,4 +11,5 @@
     <string name="database_photo_description">Flickr photo saved in the database</string>
     <string name="view_database_photos">View photos from database</string>
     <string name="add_photo_to_database_success">Photo successfully added to database</string>
+    <string name="add_photo_to_database_already_existing">This photo is already in the database</string>
 </resources>

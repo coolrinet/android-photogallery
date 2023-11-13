@@ -106,12 +106,23 @@ class PhotoGalleryFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 photoGalleryViewModel.uiState.collect { state ->
                     binding.photoGrid.adapter = PhotoListAdapter(state.images) { image ->
-                        photoGalleryViewModel.addPhotoToDatabase(image)
-                        Toast.makeText(
-                            context,
-                            R.string.add_photo_to_database_success,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            val photo = photoGalleryViewModel.getPhotoFromDatabase(image.url)
+                            if (photo == null) {
+                                photoGalleryViewModel.addPhotoToDatabase(image)
+                                Toast.makeText(
+                                    context,
+                                    R.string.add_photo_to_database_success,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    R.string.add_photo_to_database_already_existing,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     }
                     searchView?.setQuery(state.query, false)
                     updatePollingState(state.isPolling)

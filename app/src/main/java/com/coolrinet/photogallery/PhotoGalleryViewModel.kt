@@ -62,6 +62,10 @@ class PhotoGalleryViewModel : ViewModel() {
         }
     }
 
+    suspend fun getPhotoFromDatabase(photoUrl: String): GalleryItem? {
+        return galleryRepository.getPhotoByUrl(photoUrl)
+    }
+
     private suspend fun fetchGalleryItems(query: String): List<GalleryItem> {
         return if (query.isNotEmpty()) {
             photoRepository.searchPhotos(query)
