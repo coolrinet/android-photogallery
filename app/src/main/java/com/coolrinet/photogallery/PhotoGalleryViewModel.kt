@@ -15,6 +15,7 @@ private const val TAG = "PhotoGalleryViewModel"
 class PhotoGalleryViewModel : ViewModel() {
     private val photoRepository = PhotoRepository()
     private val preferencesRepository = PreferencesRepository.get()
+    private val galleryRepository = GalleryRepository.get()
 
     private val _uiState: MutableStateFlow<PhotoGalleryUiState> =
         MutableStateFlow(PhotoGalleryUiState())
@@ -52,6 +53,12 @@ class PhotoGalleryViewModel : ViewModel() {
     fun toggleIsPolling() {
         viewModelScope.launch {
             preferencesRepository.setPolling(!uiState.value.isPolling)
+        }
+    }
+
+    fun addPhotoToDatabase(photo: GalleryItem) {
+        viewModelScope.launch {
+            galleryRepository.addPhoto(photo)
         }
     }
 

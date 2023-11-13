@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -104,7 +105,14 @@ class PhotoGalleryFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 photoGalleryViewModel.uiState.collect { state ->
-                    binding.photoGrid.adapter = PhotoListAdapter(state.images)
+                    binding.photoGrid.adapter = PhotoListAdapter(state.images) { image ->
+                        photoGalleryViewModel.addPhotoToDatabase(image)
+                        Toast.makeText(
+                            context,
+                            R.string.add_photo_to_database_success,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     searchView?.setQuery(state.query, false)
                     updatePollingState(state.isPolling)
                 }
