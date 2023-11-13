@@ -4,11 +4,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.coolrinet.photogallery.GalleryItem
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface GalleryDao {
     @Query("SELECT * FROM photos")
-    suspend fun getPhotos(): List<GalleryItem>
+    fun getPhotos(): Flow<List<GalleryItem>>
 
     @Query("SELECT * FROM photos WHERE url = :photoUrl")
     suspend fun getPhotoByUrl(photoUrl: String): GalleryItem?
