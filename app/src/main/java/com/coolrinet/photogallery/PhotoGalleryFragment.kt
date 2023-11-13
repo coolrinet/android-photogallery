@@ -96,6 +96,15 @@ class PhotoGalleryFragment : Fragment() {
                         )
                         true
                     }
+                    R.id.menu_item_delete_database_photos -> {
+                        photoGalleryViewModel.deletePhotosFromDatabase()
+                        Toast.makeText(
+                            context,
+                            R.string.delete_photos_from_database_success,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        true
+                    }
                     else -> false
                 }
             }

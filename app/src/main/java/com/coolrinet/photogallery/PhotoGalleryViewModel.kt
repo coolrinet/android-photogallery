@@ -66,6 +66,12 @@ class PhotoGalleryViewModel : ViewModel() {
         return galleryRepository.getPhotoByUrl(photoUrl)
     }
 
+    fun deletePhotosFromDatabase() {
+        viewModelScope.launch {
+            galleryRepository.deleteAllPhotos()
+        }
+    }
+
     private suspend fun fetchGalleryItems(query: String): List<GalleryItem> {
         return if (query.isNotEmpty()) {
             photoRepository.searchPhotos(query)

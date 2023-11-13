@@ -12,4 +12,6 @@
     <string name="view_database_photos">View photos from database</string>
     <string name="add_photo_to_database_success">Photo successfully added to database</string>
     <string name="add_photo_to_database_already_existing">This photo is already in the database</string>
+    <string name="delete_photos_from_database">Delete photos from database</string>
+    <string name="delete_photos_from_database_success">Photos from the database have been successfully deleted</string>
 </resources>
